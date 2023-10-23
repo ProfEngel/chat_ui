@@ -24,7 +24,7 @@ def get_completion(prompt, model="local model", temperature=0.0):
 # Funktion für die Session-Liste
 def save_session_index(session_key):
     try:
-        with open('session_index.json', 'r') as f:
+        with open(os.path.join('chat_data', 'session_index.json'), 'r') as f:
             session_index = json.load(f)
     except FileNotFoundError:
         session_index = []
@@ -33,11 +33,13 @@ def save_session_index(session_key):
         "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "link": f'{session_key}_chat_history.json'
     })
-    with open('session_index.json', 'w') as f:
+    with open(os.path.join('chat_data', 'session_index.json'), 'w') as f:
         json.dump(session_index, f)
 
 def app():
     st.title("Jarvis Chatbot")
+    # Unterordner bei Bedarf für JSON-Dateien erstellen
+    os.makedirs('chat_data', exist_ok=True)
 
     # Sidebar
     st.sidebar.title("Neuer Chat")
@@ -53,7 +55,7 @@ def app():
 
     # Liste vorhandener Chats
     try:
-        with open('session_index.json', 'r') as f:
+        with open(os.path.join('chat_data', 'session_index.json'), 'r') as f:
             session_index = json.load(f)
     except FileNotFoundError:
         session_index = []
@@ -85,14 +87,14 @@ def app():
 
 def load_chat_history(session_key):
     try:
-        with open(f'{session_key}_chat_history.json', 'r') as f:
+        with open(os.path.join('chat_data', f'{session_key}_chat_history.json'), 'r') as f:
             chat_history = json.load(f)
     except FileNotFoundError:
         chat_history = []
     return chat_history
 
 def save_chat_history(session_key, chat_history):
-    with open(f'{session_key}_chat_history.json', 'w') as f:
+    with open(os.path.join('chat_data', f'{session_key}_chat_history.json'), 'w') as f:
         json.dump(chat_history, f)
 
 if __name__ == "__main__":
